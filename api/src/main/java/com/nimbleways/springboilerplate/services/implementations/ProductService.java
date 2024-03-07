@@ -49,8 +49,8 @@ public class ProductService {
     }
 
     public void handleFlashSaleProduct(Product flashSaleProduct) {
-        flashSaleProduct.setAvailable(flashSaleProduct.getFlashSaleMaxQuantity());
-        if (flashSaleProduct.getAvailable() > 0 && isWithinFlahSalePeriod(flashSaleProduct)) {
+        if (flashSaleProduct.getAvailable() > 0 && flashSaleProduct.getAvailable() >= flashSaleProduct.getFlashSaleMaxQuantity() && isWithinFlahSalePeriod(flashSaleProduct)) {
+            flashSaleProduct.setAvailable(flashSaleProduct.getFlashSaleMaxQuantity());
             flashSaleProduct.setAvailable(flashSaleProduct.getAvailable() - 1);
             flashSaleProduct.setFlashSaleMaxQuantity(flashSaleProduct.getFlashSaleMaxQuantity() - 1);
             pr.save(flashSaleProduct);

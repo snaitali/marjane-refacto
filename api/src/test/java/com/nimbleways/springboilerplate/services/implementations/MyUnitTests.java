@@ -47,7 +47,7 @@ public class MyUnitTests {
     public void test_purchase_flash_sale_product_success() {
         LocalDateTime currentTime = LocalDateTime.now();
         // GIVEN
-        Product product = new Product(null, 15, 0, "FLASHSALE", "TV", null, null, null, currentTime.minusHours(2), currentTime.plusHours(1), 1);
+        Product product = new Product(null, 15, 3, "FLASHSALE", "TV", null, null, null, currentTime.minusHours(2), currentTime.plusHours(1), 1);
 
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
@@ -57,5 +57,6 @@ public class MyUnitTests {
         // THEN
         assertEquals(0, product.getAvailable());
         Mockito.verify(productRepository, Mockito.times(1)).save(product);
+        Mockito.verify(notificationService, Mockito.times(0)).sendOutOfStockNotification(product.getName());
     }
 }
