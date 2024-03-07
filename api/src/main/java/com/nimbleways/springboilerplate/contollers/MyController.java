@@ -34,7 +34,7 @@ public class MyController {
 
     @PostMapping("{orderId}/processOrder")
     @ResponseStatus(HttpStatus.OK)
-    public ProcessOrderResponse processOrder(@PathVariable Long orderId) {
+    public ProcessOrderResponse processOrder(@PathVariable Long orderId) throws Exception {
         Order order = or.findById(orderId).get();
         System.out.println(order);
         List<Long> ids = new ArrayList<>();
@@ -67,6 +67,8 @@ public class MyController {
                 } else {
                     ps.handleExpiredProduct(p);
                 }
+            } else if (p.getType().equals(("FLASHSALE"))) {
+                ps.handleFlashSaleProduct(p);
             }
         }
 

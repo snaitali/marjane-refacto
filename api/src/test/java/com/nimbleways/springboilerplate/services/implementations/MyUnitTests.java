@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
@@ -27,7 +29,7 @@ public class MyUnitTests {
     @Test
     public void test() {
         // GIVEN
-        Product product =new Product(null, 15, 0, "NORMAL", "RJ45 Cable", null, null, null);
+        Product product =new Product(null, 15, 0, "NORMAL", "RJ45 Cable", null, null, null, null, null, null);
 
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
@@ -39,5 +41,21 @@ public class MyUnitTests {
         assertEquals(15, product.getLeadTime());
         Mockito.verify(productRepository, Mockito.times(1)).save(product);
         Mockito.verify(notificationService, Mockito.times(1)).sendDelayNotification(product.getLeadTime(), product.getName());
+    }
+
+    @Test
+    public void test_purchase_flash_sale_product_success() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        // GIVEN
+        Product product = new Product(null, 15, 0, "FLASHSALE", "TV", null, null, null, currentTime.minusHours(2), currentTime.plusHours(1), 1);
+
+        Mockito.when(productRepository.save(product)).thenReturn(product);
+
+        // WHEN
+        productService.handleFlashSaleProduct(product);
+
+        // THEN
+        assertEquals(0, product.getAvailable());
+        Mockito.verify(productRepository, Mockito.times(1)).save(product);
     }
 }

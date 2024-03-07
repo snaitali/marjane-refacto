@@ -1,6 +1,7 @@
 package com.nimbleways.springboilerplate.services.implementations;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,29 @@ public class ProductService {
             p.setAvailable(0);
             pr.save(p);
         }
+    }
+
+    public void handleFlashSaleProduct(Product flashSaleProduct) {
+        flashSaleProduct.setAvailable(flashSaleProduct.getFlashSaleMaxQuantity());
+        if (flashSaleProduct.getAvailable() > 0 && isWithinFlahSalePeriod(flashSaleProduct)) {
+            flashSaleProduct.setAvailable(flashSaleProduct.getAvailable() - 1);
+            flashSaleProduct.setFlashSaleMaxQuantity(flashSaleProduct.getFlashSaleMaxQuantity() - 1);
+            pr.save(flashSaleProduct);
+        } else {
+            ns.sendOutOfStockNotification(flashSaleProduct.getName());
+            flashSaleProduct.setAvailable(0);
+            pr.save(flashSaleProduct);
+        }
+    }
+
+
+    /**
+     * @param product
+     * @return true si le produit est actuellement dans la periode de flash sale sinon return false
+     */
+    private boolean isWithinFlahSalePeriod(Product product) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        return currentTime.isAfter(product.getFlashSaleStartDate()) &&
+                currentTime.isBefore(product.getFlashSaleEndDate());
     }
 }

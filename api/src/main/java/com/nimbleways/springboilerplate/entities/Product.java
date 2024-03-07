@@ -3,6 +3,7 @@ package com.nimbleways.springboilerplate.entities;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
@@ -38,4 +39,14 @@ public class Product {
 
     @Column(name = "season_end_date")
     private LocalDate seasonEndDate;
+
+    @Column(name = "flash_sale_start_date")
+    private LocalDateTime flashSaleStartDate;
+
+    @Column(name = "flash_sale_end_date")
+    private LocalDateTime flashSaleEndDate;
+
+    @Column(name = "flash_sale_max_quantity")
+    private Integer flashSaleMaxQuantity;
+
 }
